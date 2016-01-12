@@ -1,6 +1,7 @@
 ﻿<#
 .Description
-Migrate or clone VM 
+ Migrate VMs between storage accounts/vNets in the same subscrition or
+ Move VM to a different subscriptions
 
 .Example
 
@@ -60,7 +61,7 @@ Write-Host "`t      Dest Subscription ID 	 = $DestSubscritpionId         	 " -Fo
 Write-Host "`t   Dest Cloud Service Name 	 = $DestCloudServiceName         " -ForegroundColor Green
 Write-Host "`t Dest Storage Account Name 	 = $DestStorageAccountName       " -ForegroundColor Green
 Write-Host "`t Source Storage Container Name = $SourceStorageContainerName   " -ForegroundColor Green
-Write-Host "`t Dest Storage Container Name 	 = $DestStorageContainerName   " -ForegroundColor Green
+Write-Host "`t Dest Storage Container Name 	 = $DestStorageContainerName   "   -ForegroundColor Green
 Write-Host "`t             Dest Location 	 = $DestLocationName             " -ForegroundColor Green
 Write-Host "`t                 Dest VNET = $DestVNetName                 	 " -ForegroundColor Green
 Write-Host "`t               Dest Subnet = $DestSubNet                 	 	 " -ForegroundColor Green
