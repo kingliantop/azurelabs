@@ -1,14 +1,25 @@
 ﻿<#
-.Description
- Migrate VMs between storage accounts/vNets in the same subscrition or
- Move VM to a different subscriptions
-
-.Example
-
-Move VM from one subscription to another subscription
-    .\MoveAzureVM.ps1 -SourceSubscriptionId SubID -DestSubscritpionId DesSUBID -SourceCloudServiceName "foocs" 
-					  -SourceVMName "foovm" -DestCloudServiceName "barcs" -DestStorageAccountName "barstorage" 
-					  -DestLocationName "China East" -DestVNetName "foovnet"
+.Description:
+	This small tool will help you to copy VM from source to the destination automaticaaly, it can be used for:
+		*one storage account to another storage account in the same/different subscription
+		*one vnet to another vnet in the same/different subscription
+		*one cloud service to another in the same/different subscription 
+.Dependencies
+		* Azure powershell（0.9.8）: https://github.com/Azure/azure-powershell/releases
+		* AZcopy：http://aka.ms/downloadazcopy
+.Usage examples:
+    .\VMCopy.ps1 -SourceSubscriptionId SubID 
+				 -DestSubscritpionId DesSubID 
+				 -SourceCloudServiceName "mycs" 
+				 -SourceVMName "myvm" 
+				 -DestCloudServiceName "descs" 
+				 -DestStorageAccountName "destorage" 
+				 -DestLocationName "China East" 
+				 -DestVNetName "myvnet"
+				 -DestSubNet "desubnet"
+				 -DestSuffix "new"
+.Source address:
+	https://github.com/kingliantop/azurelabs/blob/master/vm/VMCopy.ps1
 .Updates
 	*Steven Lian（stlian@microsoft.com), August 2015
 		* Using subscription ID instead of Subscription Name
@@ -43,15 +54,47 @@ $APSMinor =(Get-Module azure).version.Minor
 $APSBuild =(Get-Module azure).version.Build
 $APSVersion =("$PSMajor.$PSMinor.$PSBuild")
 
-If ($APSVersion -ge 0.8.14)
+If ($APSVersion -ge 0.9.1)
 {
     Write-Host "Powershell version check success" -ForegroundColor Green
 }
 Else
 {
-    Write-Host "[ERROR] - Azure PowerShell module must be version 0.8.14 or higher. Exiting." -ForegroundColor Red
+    Write-Host "[ERROR] - Azure PowerShell module must be version 0.9.1 or higher. Exiting." -ForegroundColor Red
     Exit
 }
+
+$IsSameSub = $false
+
+if (($SourceSubscriptionId -eq $DestSubscritpionId) -or ($DestSubscritpionId -eq ""))
+{
+	Write-Host "VM is copied at the same subscription！" -ForegroundColor Green
+	$IsSameSub = $true
+	$DestSubscritpionId = $SourceSubscriptionId
+}
+
+if ($SourceStorageContainerName -eq "")
+{
+	Write-Host "Using the default source storage container vhds！" -ForegroundColor Green
+	$SourceStorageContainerName = "vhds"
+}
+
+if ($DestStorageContainerName -eq "")
+{
+	Write-Host "Using the default destination storage container vhds！" -ForegroundColor Green
+	$DestStorageContainerName = "vhds"
+}
+
+if ($DestLocationName -eq "")
+{
+	$DestLocationName = "China East"
+}
+
+if ($DestSubNet -eq "")
+{
+	$DestSubNet = "Subnet-1"
+}
+
 
 Write-Host "`t================= Migration Setting =======================" -ForegroundColor Green
 Write-Host "`t  Source Subscription ID 		 = $SourceSubscriptionId           " -ForegroundColor Green
@@ -73,10 +116,10 @@ $ErrorActionPreference = "Stop"
 try{ stop-transcript|out-null }
 catch [System.InvalidOperationException] { }
 
-if ($DestSuffix -eq $null)
+if (($DestSuffix -eq $null) -or ($DestSuffix -eq ""))
 {
 	$DestSuffix = "cp"
-	Write-Host "Set the default cloud service name Suffix as:"+$DestSuffix
+	Write-Host "Set the default cloud service name Suffix as:"+$DestSuffix -ForegroundColor Green
 }
 
 $workingDir = (Get-Location).Path
@@ -205,8 +248,10 @@ Set-AzureSubscription -SubscriptionId $DestSubscritpionId -CurrentStorageAccount
 
 
 # Manually change the data diskname in the same subscription coz it can't be same
-$ContinueAnswer = Read-Host "`n`tPlease update the Diskname in the configuration file "+ $vmConfigurationPath +", just add your suffix $DestSuffix to the filename:" -ForegroundColor Green
-
+if($IsSameSub)
+{
+	$ContinueAnswer = Read-Host "`n`tPlease update the Diskname in the configuration file "+ $vmConfigurationPath +", just add your suffix $DestSuffix to the filename! Then press ENTER to continue.."
+}
 # Import VM from previous exported configuration plus vnet info
 if (( Get-AzureService | Where { $_.ServiceName -eq $DestCloudServiceName } ).Count -eq 0 )
 {
