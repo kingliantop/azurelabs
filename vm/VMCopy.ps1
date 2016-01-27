@@ -54,13 +54,13 @@ $APSMinor =(Get-Module azure).version.Minor
 $APSBuild =(Get-Module azure).version.Build
 $APSVersion =("$PSMajor.$PSMinor.$PSBuild")
 
-If ($APSVersion -ge 0.9.1)
+If (($APSVersion -ge 0.9.1) -and ($APSMajor -lt 1.0))
 {
     Write-Host "Powershell version check success" -ForegroundColor Green
 }
 Else
 {
-    Write-Host "[ERROR] - Azure PowerShell module must be version 0.9.1 or higher. Exiting." -ForegroundColor Red
+    Write-Host "[ERROR] - Azure PowerShell module version must be greater than 0.9.1 and less than 1.0.0. Exiting." -ForegroundColor Red
     Exit
 }
 
@@ -95,6 +95,11 @@ if ($DestSubNet -eq "")
 	$DestSubNet = "Subnet-1"
 }
 
+if (($DestSuffix -eq $null) -or ($DestSuffix -eq ""))
+{
+	$DestSuffix = "cp"
+	Write-Host "Set the default cloud service name Suffix as:"+$DestSuffix -ForegroundColor Green
+}
 
 Write-Host "`t================= Migration Setting =======================" -ForegroundColor Green
 Write-Host "`t  Source Subscription ID 		 = $SourceSubscriptionId           " -ForegroundColor Green
@@ -115,12 +120,6 @@ $ErrorActionPreference = "Stop"
 
 try{ stop-transcript|out-null }
 catch [System.InvalidOperationException] { }
-
-if (($DestSuffix -eq $null) -or ($DestSuffix -eq ""))
-{
-	$DestSuffix = "cp"
-	Write-Host "Set the default cloud service name Suffix as:"+$DestSuffix -ForegroundColor Green
-}
 
 $workingDir = (Get-Location).Path
 $log = $workingDir + "\VM-" + $SourceCloudServiceName + "-" + $SourceVMName + ".log"
