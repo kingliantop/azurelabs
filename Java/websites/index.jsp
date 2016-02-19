@@ -93,10 +93,10 @@
           <font face="Segoe UI" size="4">
             <br/>
 	    <br/>
-            <table width="1700" frame="below">
+            <table width="2300" frame="below">
               <tr bgcolor="rgb(13,188,242)">  
                 <th align="left" width="200">    Java Property  </th>  
-                <th align="left" width="1500">    Value  </th>
+                <th align="left" width="1700">    Value  </th>
               </tr>
               <%@ page import="java.util.*" %>
 			  <%@ page import="java.lang.management.*" %>
