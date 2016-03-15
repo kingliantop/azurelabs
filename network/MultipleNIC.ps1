@@ -12,6 +12,7 @@
        Revision: 0.1
 #>
 
+
 Set-AzureSubscription -SubscriptionId XXXXX -CurrentStorageAccountName  myvmstorage
 
 $image=Get-AzureVMImage | where {$_.ImageName -like "*Ubuntu-14_04_1-LTS-amd64-server-20150123*"}
