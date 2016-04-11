@@ -29,6 +29,8 @@
 		* Add migration support between VNets in the same subscription
 		* Add Suffix support to creat cloud service and disks
 		* Add multiple data disks support in the same subscription
+	*Steven Lian（stlian@microsoft.com), April 2016
+		* Fix bugs
 #>
 
 Param 
@@ -231,13 +233,22 @@ foreach($disk in $allDisks)
 # Create OS and data disks 
 Write-Host "Add VM OS Disk. OS "+ $sourceOSDisk.OS +"diskName:" + $sourceOSDisk.DiskName + "Medialink:"+ $destOSDisk  -ForegroundColor Green
 
-$disknameOS = $sourceOSDisk.DiskName+$DestSuffix
+$disknameOS = $sourceOSDisk.DiskName
+
+if($IsSameSub)
+{
+	$disknameOS = $disknameOS+$DestSuffix
+}
 
 Add-AzureDisk -OS $sourceOSDisk.OS -DiskName $disknameOS -MediaLocation $destOSDisk
 # Attached the copied data disks to the new VM
 foreach($currenDataDisk in $destDataDisks)
 {
-    $diskName = ($sourceDataDisks | ? {$currenDataDisk.EndsWith($_.MediaLink.Segments[2])}).DiskName+$DestSuffix
+    $diskName = ($sourceDataDisks | ? {$currenDataDisk.EndsWith($_.MediaLink.Segments[2])}).DiskName
+	if($IsSameSub)
+	{
+		$diskName = $diskName+$DestSuffix
+	}
     Write-Host "Add VM Data Disk $diskName" -ForegroundColor Green
     Add-AzureDisk -DiskName $diskName -MediaLocation $currenDataDisk
 }
