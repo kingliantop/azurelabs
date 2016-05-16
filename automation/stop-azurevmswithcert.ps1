@@ -1,6 +1,6 @@
-<#
+	<#
 .NOTES
-
+ 
    Author: Steven Lian
    Updated: April 6th, 2016
 #>
@@ -23,21 +23,27 @@ workflow Stop-AzureVMs
     # Returns strings with status messages
     [OutputType([String])]
 
-    $AzureCredentialAssetName = 'automationuser@XXXX.cn'
+
     $AzureSubscriptionIdAssetName = 'automationsubid'
+    $subscriptionNameAssetname = 'azuresubscriptionname'
     # $ServiceName = 'linuxcent71'
 	# Connect to Azure and select the subscription to work against
-	$Cred = Get-AutomationPSCredential -Name $AzureCredentialAssetName
+	#$Cred = Get-AutomationPSCredential -Name $AzureCredentialAssetName
     $SubId = Get-AutomationVariable -Name $AzureSubscriptionIdAssetName
+    $subscriptionName = Get-AutomationVariable -Name $subscriptionNameAssetname 
     
     $vmconfiglist = Get-AutomationVariable -Name 'vmnamelist'
     
     $vmlist = $vmconfiglist -split ","
 
-	$null = Add-AzureAccount -Credential $Cred -Environment AzureChinaCloud -ErrorAction Stop
-	
+    $certificateName = Get-AutomationVariable -Name "mycertificateName" 
+    $certificate = Get-AutomationCertificate -Name $certificateName  
+    
+    Set-AzureSubscription -SubscriptionName $subscriptionName -SubscriptionId $SubId -Certificate $certificate -Environment AzureChinaCloud -ErrorAction Stop
+     
     $null = Select-AzureSubscription -SubscriptionId $SubId -ErrorAction Stop
 
+	
 	# If there is a specific cloud service, then get all VMs in the service,
     # otherwise get all VMs in the subscription.
     #if ($ServiceName) 
