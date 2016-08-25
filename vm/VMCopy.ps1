@@ -218,7 +218,7 @@ foreach($disk in $allDisks)
     $azcopylog = "azcopy-" + $SourceCloudServiceName + "-" + $SourceVMName +".log"
     Write-Host "Start copy vhd to destination storage account"  -ForegroundColor Green
     Write-Host .\azcopy\AzCopy\AzCopy.exe /Source:$sourceBlob /Dest:$targetBlob /SourceKey:$sourceStorageKey /DestKey:$destStorageKey /Pattern:$blobName /SyncCopy /v:$azcopylog -ForegroundColor Green
-    D:\migvm\tools\AzCopy\AzCopy.exe /Source:$sourceBlob /Dest:$targetBlob /SourceKey:$sourceStorageKey /DestKey:$destStorageKey /Pattern:$blobName /SyncCopy /v:$azcopylog 
+    D:\migvm\AzCopy\AzCopy.exe /Source:$sourceBlob /Dest:$targetBlob /SourceKey:$sourceStorageKey /DestKey:$destStorageKey /Pattern:$blobName /SyncCopy /v:$azcopylog 
 
     if ($disk –eq $sourceOSDisk)
     {
