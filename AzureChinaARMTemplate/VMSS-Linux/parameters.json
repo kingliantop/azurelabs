@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "chinanorth"
+        },
+        "vmSku": {
+            "value": "Standard_D2"
+        },
+        "image": {
+            "value": "CentOs7.2"
+        },
+        "vmssName": {
+            "value": "mylinuxsetsdemo"
+        },
+        "instanceCount": {
+            "value": "3"
+        },
+        "authenticationType": {
+            "value": "password"
+        },
+        "username": {
+            "value": "azureuser"
+        },
+        "password": {
+            "value": "Ning9346527!"
+        },
+        "sshPublicKey": {
+            "value": ""
+        }
+    }
+}

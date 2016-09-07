@@ -1,0 +1,24 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmSku": {
+      "value": "Standard_A1"
+    },
+    "ubuntuOSVersion": {
+      "value": "14.04.3-LTS"
+    },
+    "vmssName": {
+      "value": "mylinuxautoscale"
+    },
+    "instanceCount": {
+      "value": 2
+    },
+    "adminUsername": {
+      "value": "azureuser"
+    },
+    "adminPassword": {
+      "value": "Password123!"
+    }
+  }
+}
