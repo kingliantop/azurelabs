@@ -1,0 +1,26 @@
+{
+  "windowsAdminPassword": {
+    "value": "Password123!"
+  },
+  "jumpboxEndpointDNSNamePrefix": {
+    "value": "stevenjump"
+  },
+  "masterEndpointDNSNamePrefix": {
+    "value": "stevenmgt"
+  },
+  "agentEndpointDNSNamePrefix": {
+    "value": "stevenagent"
+  },
+  "agentCount": {
+    "value": 3
+  },
+  "masterCount": {
+    "value": 3
+  },
+  "agentVMSize" : {
+    "value": "Standard_A2"
+  },
+  "sshRSAPublicKey": {
+    "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDcaTB78lzs0kdemINpJjXz6yXm0jr+Hbw8Ozu2Wc3NNkzlCbaO6ms0J4UIDVp7NU7OW5hb6jo/mvZAVmCPUqChxOZdVTqrM+0w2Cnz1aAWvBqPY8fi3Z9mOMJEX7/KlMGiGk7Za7tFHD3uyH1ieAWcOoQz2R83Rp967mjDKGzRjzLah3655PxSrvyOWY79rYl94XXrcvN7x4bu0FiPVdgWlgaDX92gceqeidZf3HuSWpryHD+OSlMOvm2xnCyOKrthcpvM5oIQVHyy+9gXkdiNQ4XOBm7zDMg7xPuiZWKN1NbwLO85Dziqg+eD++eyYdO8OxLL88GhNIzNn/CKx9I3 steven@CN-STLIAN-SP4"
+  }
+}
