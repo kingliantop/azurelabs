@@ -1,5 +1,5 @@
 $VerbosePreference="Continue"
-$deployName="stevenmesosnorgp"
+$deployName="stevenmesosnorthgp"
 $RGName=$deployName
 $locName="China North"
 
