@@ -17,6 +17,7 @@ echo "starting mesos cluster configuration"
 date
 ps ax
 
+AZURECHINAMIRROR="http://azuremirror.chinanorth.cloudapp.chinacloudapi.cn/mirror"
 SWARM_VERSION="swarm:1.1.0"
 #############
 # Parameters
@@ -214,7 +215,9 @@ echo "Installing and configuring docker and swarm"
 installDocker()
 {
   for i in {1..10}; do
-    wget --tries 4 --retry-connrefused --waitretry=15 -qO- https://get.docker.com | sh
+    #wget --tries 4 --retry-connrefused --waitretry=15 -qO- https://get.docker.com | sh
+    wget ${AZURECHINAMIRROR}/mesostools/dockerinstall.sh
+    sudo sh dockerinstall.sh
     if [ $? -eq 0 ]
     then
       # hostname has been found continue
@@ -275,16 +278,11 @@ if isomsrequired ; then
 fi
 
 #StevenL use China 163 Ubuntu source for fast speed
-echo -e "deb http://mirrors.163.com/ubuntu/ trusty main restricted universe multiverse\n
-deb http://mirrors.163.com/ubuntu/ trusty-security main restricted universe multiverse\n
-deb http://mirrors.163.com/ubuntu/ trusty-updates main restricted universe multiverse\n
-deb http://mirrors.163.com/ubuntu/ trusty-proposed main restricted universe multiverse\n
-deb http://mirrors.163.com/ubuntu/ trusty-backports main restricted universe multiverse\n
-deb-src http://mirrors.163.com/ubuntu/ trusty main restricted universe multiverse\n
-deb-src http://mirrors.163.com/ubuntu/ trusty-security main restricted universe multiverse\n
-deb-src http://mirrors.163.com/ubuntu/ trusty-updates main restricted universe multiverse\n
-deb-src http://mirrors.163.com/ubuntu/ trusty-proposed main restricted universe multiverse\n
-deb-src http://mirrors.163.com/ubuntu/ trusty-backports main restricted universe multiverse"|sudo tee /etc/apt/sources.list
+echo -e "deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty main restricted universe multiverse\n
+deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty-security main restricted universe multiverse\n
+deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty-updates main restricted universe multiverse\n
+deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty-proposed main restricted universe multiverse\n
+deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty-backports main restricted universe multiverse\n"|sudo tee /etc/apt/sources.list
 
 ##################
 # Install Mesos
@@ -292,9 +290,9 @@ deb-src http://mirrors.163.com/ubuntu/ trusty-backports main restricted universe
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv E56151BF
 DISTRO=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
 CODENAME=$(lsb_release -cs)
-echo "deb http://azuremirror.chinanorth.cloudapp.chinacloudapi.cn/mirror/repos.mesosphere.io/${DISTRO} ${CODENAME} main" | sudo tee /etc/apt/sources.list.d/mesosphere.list
+echo "deb ${AZURECHINAMIRROR}/repos.mesosphere.io/${DISTRO} ${CODENAME} main" | sudo tee /etc/apt/sources.list.d/mesosphere.list
 time sudo add-apt-repository -y ppa:openjdk-r/ppa
-echo "deb http://azuremirror.chinanorth.cloudapp.chinacloudapi.cn/mirror/ppa.launchpad.net/openjdk-r/ppa/${DISTRO} ${CODENAME} main" | sudo tee /etc/apt/sources.list.d/openjdk-r-ppa-trusty.list
+echo "deb ${AZURECHINAMIRROR}/ppa.launchpad.net/openjdk-r/ppa/${DISTRO} ${CODENAME} main" | sudo tee /etc/apt/sources.list.d/openjdk-r-ppa-trusty.list
 time sudo apt-get -y update
 time sudo DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install openjdk-8-jre-headless
 if ismaster ; then
@@ -350,7 +348,7 @@ fi
 if ismaster ; then
   # Download and install mesos-dns
   sudo mkdir -p /usr/local/mesos-dns
-  sudo wget --tries 4 --retry-connrefused --waitretry=15 https://github.com/mesosphere/mesos-dns/releases/download/v0.5.1/mesos-dns-v0.5.1-linux-amd64 -O mesos-dns-linux
+  sudo wget --tries 4 --retry-connrefused --waitretry=15 ${AZURECHINAMIRROR}/mesostools/mesos-dns-v0.5.1-linux-amd64 -O mesos-dns-linux
   sudo chmod +x mesos-dns-linux
   sudo mv mesos-dns-linux /usr/local/mesos-dns/mesos-dns
   RESOLVER=`cat /etc/resolv.conf | grep nameserver | tail -n 1 | awk '{print $2}'`
@@ -477,7 +475,8 @@ installMesosAdminRouter()
 {
   sudo DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install nginx-extras lua-cjson
   # the admin router comes from https://github.com/mesosphere/adminrouter-public
-  ADMIN_ROUTER_GITHUB_URL=https://raw.githubusercontent.com/anhowe/adminrouter-public/master
+  #ADMIN_ROUTER_GITHUB_URL=https://raw.githubusercontent.com/anhowe/adminrouter-public/master
+  ADMIN_ROUTER_GITHUB_URL=http://azuremirror.chinanorth.cloudapp.chinacloudapi.cn/mirror/mesostools
   NGINX_CONF_PATH=/usr/share/nginx/conf
   sudo mkdir -p $NGINX_CONF_PATH
   wget --tries 4 --retry-connrefused --waitretry=15 -qO$NGINX_CONF_PATH/common.lua $ADMIN_ROUTER_GITHUB_URL/common.lua
@@ -488,7 +487,7 @@ installMesosAdminRouter()
   wget --tries 4 --retry-connrefused --waitretry=15 -qO$NGINX_CONF_PATH/url.lua $ADMIN_ROUTER_GITHUB_URL/url.lua
 
   sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
-  sudo cp /opt/azure/containers/nginx.conf /etc/nginx/nginx.conf
+  sudo cp nginx.conf /etc/nginx/nginx.conf
 }
 
 # only install the mesos dcos cli on the master

@@ -258,7 +258,7 @@
     "masterLbIPConfigName": "[concat(variables('orchestratorName'), '-master-lbFrontEnd-', variables('nameSuffix'))]",
     "masterLbIPConfigID": "[concat(variables('masterLbID'),'/frontendIPConfigurations/', variables('masterLbIPConfigName'))]",
     "masterLbBackendPoolName": "[concat(variables('orchestratorName'), '-master-pool-', variables('nameSuffix'))]",
-    "masterCustomScript": "[concat('/bin/bash -c \"/bin/bash /opt/azure/containers/configure-mesos-cluster.sh ',variables('clusterInstallParameters'),' >> /var/log/azure/cluster-bootstrap.log 2>&1\"')]",
+    "masterCustomScript": "[concat('/bin/bash -c \"/bin/bash configure-mesos-cluster.sh ',variables('clusterInstallParameters'),' >> /var/log/azure/cluster-bootstrap.log 2>&1\"')]",
 
     "agentFirstAddr": 20,
     "agentVMNamePrefix": "[concat(variables('orchestratorName'), '-agent-', variables('nameSuffix'))]",
@@ -700,7 +700,10 @@
         "type": "CustomScriptForLinux",
         "typeHandlerVersion": "1.4",
         "settings": {
-          "fileUris": [],
+          "fileUris": [
+            "https://raw.githubusercontent.com/kingliantop/azurelabs/master/AzureChinaARMTemplate/mesos-marathon-vmss-china/scripts/configure-mesos-cluster.sh",
+            "https://raw.githubusercontent.com/kingliantop/azurelabs/master/AzureChinaARMTemplate/mesos-marathon-vmss-china/scripts/nginx.conf"
+          ],
           "commandToExecute": "[variables('masterCustomScript')]"
         }
       }
@@ -946,6 +949,22 @@
                         "storageAccountName": "[variables(concat('diagnosticsStorageAccountName', '-', variables('enableVMDiagnostics')))]",
                         "storageAccountKey": "[listKeys(variables('accountid'), variables('storageApiVersion')).key1]"
                     }
+                }
+              },
+              {
+                "name": "agentcustomscript",
+                "properties": {
+                  "publisher": "Microsoft.OSTCExtensions",
+                  "type": "CustomScriptForLinux",
+                  "typeHandlerVersion": "1.4",
+                  "autoUpgradeMinorVersion": false,
+                  "settings": {
+                    "fileUris": [
+                      "https://raw.githubusercontent.com/kingliantop/azurelabs/master/AzureChinaARMTemplate/mesos-marathon-vmss-china/scripts/configure-mesos-cluster.sh",
+                      "https://raw.githubusercontent.com/kingliantop/azurelabs/master/AzureChinaARMTemplate/mesos-marathon-vmss-china/scripts/nginx.conf"
+                    ],
+                    "commandToExecute": "[variables('masterCustomScript')]"
+                  }
                 }
               }
             ]
