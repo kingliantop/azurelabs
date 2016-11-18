@@ -49,6 +49,13 @@ echo "SWARMENABLED: $SWARMENABLED, MARATHONENABLED: $MARATHONENABLED, CHRONOSENA
 echo "ACCOUNTNAME: $ACCOUNTNAME"
 echo "BASESUBNET: $BASESUBNET"
 
+#StevenL use China local mirror Ubuntu source for fast speed
+echo -e "deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty main restricted universe multiverse\n
+deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty-security main restricted universe multiverse\n
+deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty-updates main restricted universe multiverse\n
+deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty-proposed main restricted universe multiverse\n
+deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty-backports main restricted universe multiverse\n"|sudo tee /etc/apt/sources.list
+
 ###################
 # Common Functions
 ###################
@@ -276,13 +283,6 @@ if isomsrequired ; then
   docker run --restart=always -d 137.135.93.9/msdockeragentv3 http://${VMNAME}:2375 "${EPSTRING}"
   set -x
 fi
-
-#StevenL use China 163 Ubuntu source for fast speed
-echo -e "deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty main restricted universe multiverse\n
-deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty-security main restricted universe multiverse\n
-deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty-updates main restricted universe multiverse\n
-deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty-proposed main restricted universe multiverse\n
-deb ${AZURECHINAMIRROR}/archive.ubuntu.com/ubuntu/ trusty-backports main restricted universe multiverse\n"|sudo tee /etc/apt/sources.list
 
 ##################
 # Install Mesos
