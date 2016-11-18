@@ -973,7 +973,7 @@
           "diagnosticsProfile": {
             "bootDiagnostics": {
               "enabled": "[variables('enableVMDiagnostics')]",
-              "storageUri": "[concat('https://', variables('diagnosticsStorageAccountName')), '.blob.core.chinacloudapi.cn/')]"
+              "storageUri": "[concat('https://', variables('diagnosticsStorageAccountName'), '.blob.core.chinacloudapi.cn/')]"
             }
           }
         }
