@@ -501,8 +501,8 @@ fi
 installMesosDCOSCLI()
 {
   sudo DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install -y python-pip python-dev libffi-dev libssl-dev
-  sudo pip install pyOpenSSL ndg-httpsclient pyasn1
-  sudo pip install virtualenv 
+  sudo pip install -i https://pypi.douban.com/simple/ pyOpenSSL ndg-httpsclient pyasn1
+  sudo pip install -i https://pypi.douban.com/simple/ virtualenv 
   sudo -i -u $AZUREUSER mkdir $HOMEDIR/dcos
   for i in {1..10}; do
     wget --tries 4 --retry-connrefused --waitretry=15 -qO- https://raw.githubusercontent.com/dcos/dcos-cli/master/bin/install/legacy/install-legacy-optout-dcos-cli.sh | sudo -i -u $AZUREUSER /bin/bash -s $HOMEDIR/dcos/. http://leader.mesos --add-path yes
