@@ -1,9 +1,9 @@
 {
   "masterEndpointDNSNamePrefix": {
-    "value": "stevenmgtlinuxnor"
+    "value": "stevenmgtnorlinux"
   },
   "agentEndpointDNSNamePrefix": {
-    "value": "stevenagentlinuxnor"
+    "value": "stevenagentnorlinux"
   },
   "agentCount": {
     "value": 3

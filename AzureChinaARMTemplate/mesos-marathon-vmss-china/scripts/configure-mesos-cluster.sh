@@ -500,11 +500,12 @@ fi
 ###################
 installMesosDCOSCLI()
 {
-  sudo DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install -y python-pip
-  sudo pip install virtualenv
+  sudo DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install -y python-pip python-dev libffi-dev libssl-dev
+  sudo pip install pyOpenSSL ndg-httpsclient pyasn1
+  sudo pip install virtualenv 
   sudo -i -u $AZUREUSER mkdir $HOMEDIR/dcos
   for i in {1..10}; do
-    wget --tries 4 --retry-connrefused --waitretry=15 -qO- https://raw.githubusercontent.com/mesosphere/dcos-cli/master/bin/install/install-optout-dcos-cli.sh | sudo -i -u $AZUREUSER /bin/bash -s $HOMEDIR/dcos/. http://leader.mesos --add-path yes
+    wget --tries 4 --retry-connrefused --waitretry=15 -qO- https://raw.githubusercontent.com/dcos/dcos-cli/master/bin/install/legacy/install-legacy-optout-dcos-cli.sh | sudo -i -u $AZUREUSER /bin/bash -s $HOMEDIR/dcos/. http://leader.mesos --add-path yes
     if [ $? -eq 0 ]
     then
       echo "Mesos DCOS-CLI installed successfully"
@@ -535,7 +536,7 @@ echo "completed mesos cluster configuration"
 
 echo "restart system to install any remaining software"
 if isagent ; then
-  shutdown -r now
+  sudo shutdown -r now
 else
   # wait 30s for guest agent to communicate back success and then reboot
   /usr/bin/nohup /bin/bash -c "sleep 30s; shutdown -r now" &
