@@ -946,7 +946,9 @@
                     },
                     "protectedSettings": {
                         "storageAccountName": "[variables(concat('diagnosticsStorageAccountName', '-', variables('enableVMDiagnostics')))]",
-                        "storageAccountKey": "[listKeys(variables('accountid'), variables('storageApiVersion')).key1]"
+                        "storageAccountKey": "[listKeys(variables('accountid'), variables('storageApiVersion')).key1]",
+                        "storageAccountEndPoint": "https://core.chinacloudapi.cn",
+                        "endpoint": "table.core.chinacloudapi.cn"
                     }
                 }
               },
@@ -971,7 +973,7 @@
           "diagnosticsProfile": {
             "bootDiagnostics": {
               "enabled": "[variables('enableVMDiagnostics')]",
-              "storageUri": "[reference(concat('Microsoft.Storage/storageAccounts/', variables('diagnosticsStorageAccountName')), variables('storageApiVersion')).primaryEndpoints.blob]"
+              "storageUri": "[concat('https://', variables('diagnosticsStorageAccountName')), '.blob.core.chinacloudapi.cn/')]"
             }
           }
         }
