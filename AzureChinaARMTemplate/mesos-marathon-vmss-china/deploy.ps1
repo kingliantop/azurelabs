@@ -1,10 +1,10 @@
 $VerbosePreference="Continue"
-$deployName="stevenmesosnorthgp"
+$deployName="YOURRESOURCEGROUPNAME"
 $RGName=$deployName
 $locName="China North"
 
-$templateFile= "mesos-cluster-vmss.json"
-$templateParameterFile= "cluster.parameters.json"
+$templateFile= "azuredeploy.json"
+$templateParameterFile= "azuredeploy.parameters.json"
 New-AzureRmResourceGroup -Name $RGName -Location $locName -Force
 
 echo New-AzureRmResourceGroupDeployment -Name $deployName -ResourceGroupName $RGName -TemplateFile $templateFile

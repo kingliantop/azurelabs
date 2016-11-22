@@ -1,0 +1,51 @@
+{
+  "apiVersion": "vlabs",
+  "plan": {},
+  "properties": {
+    "provisioningState": "",
+    "orchestratorProfile": {
+      "orchestratorType": "DCOS184"
+    },
+    "masterProfile": {
+      "count": 1,
+      "dnsPrefix": "dcosmaterdemo",
+      "vmSize": "Standard_D2",
+      "firstConsecutiveStaticIP": "172.16.0.5"
+    },
+    "agentPoolProfiles": [
+      {
+        "name": "agentprivate",
+        "count": 3,
+        "vmSize": "Standard_D2",
+        "availabilityProfile": "VirtualMachineScaleSets",
+        "storageProfile": "StorageAccount"
+      },
+      {
+        "name": "agentpublic",
+        "count": 3,
+        "vmSize": "Standard_D2",
+        "dnsPrefix": "dcosagentdemo",
+        "ports": [
+          80,
+          443,
+          8080
+        ],
+        "availabilityProfile": "VirtualMachineScaleSets",
+        "storageProfile": "StorageAccount"
+      }
+    ],
+    "linuxProfile": {
+      "adminUsername": "azureuser",
+      "ssh": {
+        "publicKeys": [
+          {
+            "keyData": ""
+          }
+        ]
+      }
+    },
+    "windowsProfile": {},
+    "servicePrincipalProfile": {},
+    "certificateProfile": {}
+  }
+}
