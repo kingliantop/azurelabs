@@ -1,0 +1,354 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername":{
+            "defaultValue": "azureuser",
+            "type": "string"
+        },
+        "adminPassword": {
+            "defaultValue": null,
+            "type": "securestring"
+        },
+        "vmCounts": {
+            "type": "int",
+            "defaultValue": "1",
+            "metadata": {
+                "description": "Number of VM instances (100 or less)."
+            }
+        },
+        "OSVersion": {
+            "type": "string",
+            "defaultValue": "6.8",
+            "allowedValues": [
+                 "7.1",
+                 "7.2",
+                 "6.7",
+                 "6.8"
+            ],
+            "metadata": {
+                "description": "The CentOS version for the VM. This will pick the latest available image of this given RHEL version."
+                }
+         },
+        "vmSku": {
+             "type": "string",
+             "defaultValue": "Standard_DS4",
+             "allowedValues": [
+                    "Standard_A10",
+                    "Standard_A11",
+                    "Standard_A2",
+                    "Standard_A3",
+                    "Standard_A4",
+                    "Standard_A5",
+                    "Standard_A6",
+                    "Standard_A7",
+                    "Standard_A8",
+                    "Standard_A9",
+                    "Standard_D11",
+                    "Standard_D11_v2",
+                    "Standard_D12",
+                    "Standard_D12_v2",
+                    "Standard_D13",
+                    "Standard_D13_v2",
+                    "Standard_D14",
+                    "Standard_D14_v2",
+                    "Standard_D15_v2",
+                    "Standard_D2",
+                    "Standard_D2_v2",
+                    "Standard_D3",
+                    "Standard_D3_v2",
+                    "Standard_D4",
+                    "Standard_D4_v2",
+                    "Standard_D5_v2",
+                    "Standard_DS11",
+                    "Standard_DS11_v2",
+                    "Standard_DS12",
+                    "Standard_DS12_v2",
+                    "Standard_DS13",
+                    "Standard_DS13_v2",
+                    "Standard_DS14",
+                    "Standard_DS14_v2",
+                    "Standard_DS15_v2",
+                    "Standard_DS2",
+                    "Standard_DS2_v2",
+                    "Standard_DS3",
+                    "Standard_DS3_v2",
+                    "Standard_DS4",
+                    "Standard_DS4_v2",
+                    "Standard_DS5_v2",
+                    "Standard_F16",
+                    "Standard_F2",
+                    "Standard_F4",
+                    "Standard_F8",
+                    "Standard_F1"
+                    
+         ]
+            
+        },
+        "virtualMachinesNamePrefix":{
+             "type": "string", 
+             "defaultValue": "mysqlserver"
+        }
+    },
+    "variables": {
+        "namingInfix": "[toLower(substring(concat(parameters('virtualMachinesNamePrefix'), uniqueString(resourceGroup().id)), 0, 9))]",
+        "nicName": "[concat(variables('namingInfix'), '-nic')]",
+        "nsgName": "[concat(variables('namingInfix'), '-nsg')]",
+        "pipName": "[concat(variables('namingInfix'), '-pip')]",
+        "vnetName": "[concat(variables('namingInfix'), '-vnet')]",
+        "dnsNamePrefix": "[concat(parameters('virtualMachinesNamePrefix'),'-dns')]",
+        "storageAccountName": "[concat(variables('namingInfix'), 'storage')]",
+        "storageAccountNameDiag": "[concat(variables('namingInfix'), 'storagediag')]",
+        "addressPrefix": "10.0.0.0/16",
+        "subnetPrefix": "10.0.0.0/24",
+        "availabilitySetName": "[concat(variables('namingInfix'), '-avset')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/availabilitySets",
+            "name": "[variables('availabilitySetName')]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[concat(parameters('virtualMachinesNamePrefix'),'-',copyIndex())]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "copy": {
+                 "name": "deploycopy",
+                 "count": "[parameters('vmCounts')]"
+            },
+            "properties": {
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('availabilitySetName'))]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSku')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "OpenLogic",
+                        "offer": "CentOS",
+                        "sku": "[parameters('OSVersion')]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "[concat(parameters('virtualMachinesNamePrefix'),copyIndex(),'osdisk')]",
+                        "createOption": "FromImage",
+                        "vhd": {
+                            "uri": "[concat('https', '://', variables('storageAccountName'), '.blob.core.chinacloudapi.cn', concat('/vhds/', parameters('virtualMachinesNamePrefix'),copyIndex(),'osdisk.vhd'))]"
+                        },
+                        "caching": "ReadWrite"
+                    },
+                    "dataDisks": [
+                        {
+                            "lun": 0,
+                            "name": "[concat( parameters('virtualMachinesNamePrefix'),copyIndex(),'-datadisk1')]",
+                            "createOption": "Empty",
+                             "vhd": {
+                                    "uri": "[concat('https', '://', variables('storageAccountName'), '.blob.core.chinacloudapi.cn', concat('/vhds/',parameters('virtualMachinesNamePrefix'),copyIndex(),'-datadisk1.vhd'))]"
+                             },
+                             "caching": "ReadOnly",
+                             "diskSizeGB": "1023"
+                         },
+                         {
+                            "lun": 1,
+                            "name": "[concat(parameters('virtualMachinesNamePrefix'),copyIndex(),'-datadisk-2')]",
+                             "createOption": "Empty",
+                             "vhd": {
+                                 "uri": "[concat('https', '://', variables('storageAccountName'), '.blob.core.chinacloudapi.cn', concat('/vhds/', parameters('virtualMachinesNamePrefix'),copyIndex(),'-datadisk2.vhd'))]"
+                                 },
+                            "caching": "ReadOnly",
+                            "diskSizeGB": "1023"
+                         }
+
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[concat(parameters('virtualMachinesNamePrefix'),'-',copyIndex())]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": false
+                    },
+                    "secrets": [],
+                    "adminPassword": "[parameters('adminPassword')]"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'),copyIndex()))]"
+                        }
+                    ]
+                },
+                "extensionProfile": {
+                    "extensions": [
+                {
+                    "name": "customextension",
+                    "properties": {
+                        "publisher": "Microsoft.OSTCExtensions",
+                        "type": "CustomScriptForLinux",
+                        "typeHandlerVersion": "1.5",
+                        "autoUpgradeMinorVersion": false,
+                        "settings": {
+                            "fileUris": [
+                                    "https://raw.githubusercontent.com/kingliantop/azurelabs/master/AzureChinaARMTemplate/vmss-lapstack-autoscale/install_lap.sh"
+                                ],
+                    "commandToExecute": "bash vm-disk-utils-0.2.sh -s"
+                  }
+                }
+              }
+            ]
+          }
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'),copyIndex()))]",
+                "[concat('Microsoft.Compute/availabilitySets/', variables('availabilitySetName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[concat(variables('nicName'),copyIndex())]",
+            "copy": {
+                 "name": "networkdeploy",
+                 "count": "[parameters('vmCounts')]"
+            },
+            "apiVersion": "2016-03-30",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('pipName'),copyIndex()))]"
+                            },
+                            "subnet": {
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('vnetName')), '/subnets/default')]"
+                            }
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableIPForwarding": false,
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('nsgName'),copyIndex()))]"
+                }
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('pipName'),copyIndex()))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('nsgName'),copyIndex()))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[concat(variables('nsgName'),copyIndex())]",
+            "copy": {
+                 "name": "nsgdeploy",
+                 "count": "[parameters('vmCounts')]"
+            },
+            "apiVersion": "2016-03-30",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-ssh",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1000,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[concat(variables('pipName'),copyIndex())]",
+            "copy": {
+                 "name": "pipdeploy",
+                 "count": "[parameters('vmCounts')]"
+            },
+            "apiVersion": "2016-03-30",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "dnsSettings": {
+                    "domainNameLabel": "[concat(variables('dnsNamePrefix'),copyIndex())]"
+                },
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 15
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[variables('vnetName')]",
+            "apiVersion": "2016-03-30",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[variables('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "properties": {
+                            "addressPrefix": "[variables('subnetPrefix')]"
+                        }
+                    }
+                ]
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[variables('storageAccountNameDiag')]",
+            "apiVersion": "2016-01-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {},
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            },
+            "kind": "Storage",
+            "name": "[variables('storageAccountName')]",
+            "apiVersion": "2016-01-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {},
+            "resources": [],
+            "dependsOn": []
+        }
+    ]
+}

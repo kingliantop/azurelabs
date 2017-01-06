@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername":{
+            "value": "azureuser",
+            "metadata": {
+                "description": "Linux VM user name."
+            }
+        },
+        "adminPassword": {
+            "value": "ChangeIT!",
+            "metadata": {
+                "description": "Linux VM password, please change it!"
+             }
+        },
+        "vmCounts": {
+            "value": 2,
+            "metadata": {
+                "description": "Number of VMs you want to create."
+            }
+        },
+        "virtualMachinesNamePrefix": {
+            "value": "mongo",
+            "metadata": {
+                "description": "The prefix of your vm name, for example, you want to create 3 VMs, the VM name will be mymobike-mysql-0,mymobike-mysql-1,mymobike-mysql-2"
+            }
+        }
+    }
+}
