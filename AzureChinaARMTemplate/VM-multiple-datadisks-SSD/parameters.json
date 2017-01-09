@@ -21,9 +21,15 @@
             }
         },
         "virtualMachinesNamePrefix": {
-            "value": "watervm",
+            "value": "docvm",
             "metadata": {
                 "description": "The prefix of your vm name, for example, you want to create 3 VMs, the VM name will be mymobike-mysql-0,mymobike-mysql-1,mymobike-mysql-2"
+            }
+        },
+        "vmSku":{
+            "value": "Standard_DS4",
+            "metadata": {
+                "description": "VM size"
             }
         }
     }
