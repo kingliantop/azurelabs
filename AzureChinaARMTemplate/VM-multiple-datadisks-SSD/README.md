@@ -1,9 +1,10 @@
-<a href="https://portal.azure.cn/#create/Microsoft.Template/uri/https://raw.githubusercontent.com/kingliantop/azurelabs/master/AzureChinaARMTemplate/VM-multiple-datadisks-SSD/template.json" target="_blank">
+<a href="https://portal.azure.cn/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fkingliantop%2Fazurelabs%2Fmaster%2FAzureChinaARMTemplate%2FVM-multiple-datadisks-SSD%2Ftemplate.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 <a href="http://armviz.io/#/?load=/https://raw.githubusercontent.com/kingliantop/azurelabs/master/AzureChinaARMTemplate/VM-multiple-datadisks-SSD/template.json" target="_blank">
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
+
 本模板由Steven Lian创建，主要完成在Azure China自动化创建多个Linux(centOS 6.8 by default)虚拟机（D/DS系列），挂载多个SSD硬盘，并自动创建RAID0磁盘，提高IOPS性能。该脚本支持：
 1. NSG
 2. public IP及DNS
