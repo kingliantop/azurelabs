@@ -1,4 +1,4 @@
-<a href="https://portal.azure.cn/#create/Microsoft.Template/uri/https://raw.githubusercontent.com/kingliantop/azurelabs/master/AzureChinaARMTemplate/VM-multiple-datadisks-SSD/template.json" target="_blank">
+<a href="https://portal.azure.cn/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fkingliantop%2Fazurelabs%2Fmaster%2FAzureChinaARMTemplate%2FVM-multiple-datadisks-SSD%2Ftemplate.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 <a href="http://armviz.io/#/?load=/https://raw.githubusercontent.com/kingliantop/azurelabs/master/AzureChinaARMTemplate/VM-multiple-datadisks-SSD/template.json" target="_blank">
