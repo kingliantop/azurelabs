@@ -11,7 +11,7 @@ import mt_service1495184382.models as models
 from requests.utils import to_key_val_list, default_headers
 
 
-login = models.LoginRequest("admin","Ning9346527!")
+login = models.LoginRequest("admin","PASSWORD!")
 
 mtp = mt.MtService1495184382("http://42.159.115.154:12800")
 
