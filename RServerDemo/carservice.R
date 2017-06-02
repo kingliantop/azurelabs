@@ -31,7 +31,7 @@ print(manualTransmission(120, 2.8)) # 0.6418125
 # remote R session started
 remoteLogin("http://42.159.238.196:12800", 
             username = "admin", 
-            password = "Ning9346527!",
+            password = "PASSWORD!",
             session = FALSE)
 
 ##########################################################
