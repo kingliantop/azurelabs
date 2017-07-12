@@ -14,7 +14,8 @@
       "defaultValue": "14.04.3-LTS",
       "allowedValues": [
         "15.10",
-        "14.04.3-LTS"
+        "14.04.5-LTS",
+	"16.04-LTS"
       ],
       "metadata": {
         "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version. Allowed values are: 15.10, 14.04.4-LTS."
@@ -278,7 +279,7 @@
                     "storageAccountName": "[variables('diagnosticsStorageAccountName')]",
                     "storageAccountKey": "[listkeys(variables('accountid'), variables('storageApiVersion')).key1]",
                     "storageAccountEndPoint": "https://core.chinacloudapi.cn",
-                    "endpoint": "table.core.chinacloudapi.cn"
+                    "endpoint":"table.core.chinacloudapi.cn"
                   }
                 }
               }
@@ -303,9 +304,9 @@
           {
             "name": "Profile1",
             "capacity": {
-              "minimum": "1",
+              "minimum": "2",
               "maximum": "10",
-              "default": "1"
+              "default": "2"
             },
             "rules": [
               {
