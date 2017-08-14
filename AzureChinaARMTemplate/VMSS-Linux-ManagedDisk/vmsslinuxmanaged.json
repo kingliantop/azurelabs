@@ -255,7 +255,7 @@
             "rules": [
               {
                 "metricTrigger": {
-                  "metricName": "\\Processor\\PercentUserTime",
+                  "metricName": "Percentage CPU",
                   "metricNamespace": "",
                   "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('namingInfix'))]",
                   "timeGrain": "PT1M",
@@ -274,7 +274,7 @@
               },
               {
                 "metricTrigger": {
-                  "metricName": "\\Processor\\PercentUserTime",
+                  "metricName": "Percentage CPU",
                   "metricNamespace": "",
                   "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('namingInfix'))]",
                   "timeGrain": "PT1M",
