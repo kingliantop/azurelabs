@@ -45,7 +45,8 @@
 #	3. Add lazy_itable_init for the fast format
 # Updated Date: December 30th 2016
 # Version 0.3
-# Updated at Aug. 2017 for Azure managed disk
+# For Azure managed disk
+# Updated at Aug. 2017,Steven Lian 
 
 help()
 {
