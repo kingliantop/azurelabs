@@ -118,7 +118,9 @@
       "apiVersion": "[variables('storageApiVersion')]",
       "sku": {
         "name": "[variables('storageAccountType')]"
-      }
+      },
+      "kind": "Storage",
+      "properties": {}
     },
     {
       "type": "Microsoft.Network/publicIPAddresses",
@@ -263,7 +265,7 @@
                   },
                   "protectedSettings": {
                     "storageAccountName": "[variables('diagnosticsStorageAccountName')]",
-                    "storageAccountKey": "[listkeys(variables('accountid'), variables('storageApiVersion')).key1]",
+                    "storageAccountKey": "[listkeys(variables('accountid'), variables('storageApiVersion')).keys]",
                     "storageAccountEndPoint": "https://core.chinacloudapi.cn",
                     "endpoint":"table.core.chinacloudapi.cn"
                   }
