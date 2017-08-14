@@ -116,8 +116,8 @@
       "name": "[variables('diagnosticsStorageAccountName')]",
       "location": "[resourceGroup().location]",
       "apiVersion": "[variables('storageApiVersion')]",
-      "properties": {
-        "accountType": "[variables('storageAccountType')]"
+      "sku": {
+        "name": "[variables('storageAccountType')]"
       }
     },
     {
