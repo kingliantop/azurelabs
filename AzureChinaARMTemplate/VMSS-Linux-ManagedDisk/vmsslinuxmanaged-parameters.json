@@ -9,7 +9,7 @@
       "value": "16.04-LTS"
     },
     "vmssName": {
-      "value": "linuxautoscalemanaged"
+      "value": "linuxvmssmanaged"
     },
     "instanceCount": {
       "value": 2

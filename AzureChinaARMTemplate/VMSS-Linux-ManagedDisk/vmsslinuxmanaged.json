@@ -270,6 +270,21 @@
                     "endpoint":"table.core.chinacloudapi.cn"
                   }
                 }
+              },
+              {
+                "name": "diskutils",
+                "properties": {
+                  "publisher": "Microsoft.OSTCExtensions",
+                  "type": "CustomScriptForLinux",
+                  "typeHandlerVersion": "1.4",
+                  "autoUpgradeMinorVersion": false,
+                  "settings": {
+                    "fileUris": [
+                      "https://raw.githubusercontent.com/kingliantop/azurelabs/master/AzureChinaARMTemplate/VMSS-Linux-ManagedDisk/vm-disk-utils-0.3.sh"
+                    ],
+                    "commandToExecute": "bash vm-disk-utils-0.3.sh"
+                  }
+                }
               }
             ]
           }
