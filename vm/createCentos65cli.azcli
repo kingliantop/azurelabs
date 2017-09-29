@@ -1,0 +1,55 @@
+# Description: using the hidden images like CentOS 6.5,6.6,6.7 to create VMs in Azure China
+# Dependencies: Azure CLI 2.0
+# Author: Steven Lian(stlian@microsoft.com)
+
+#!/bin/bash
+
+#Set CLI environment to Azure China
+az cloud set --name AzureChinaCloud
+
+# Login to Azure China environment, please use your own username and password
+az login -u XXXXX@XXXXX.partner.onmschina.cn -p "PASSWORD!"
+
+# Please set your default subscription name
+az account set --subscription <subscirption name>
+
+# List image publishers
+az vm image list-publishers --location 'chinanorth' --output table
+
+# List offering
+az vm image list-offers --location 'chinanorth' --publisher OpenLogic
+
+# List SKUs
+az vm image list-skus --location 'chinanorth' --publisher OpenLogic --offer 'CentOS' --output table
+
+# get the URN of the OS ypou want to create
+az vm image list --publisher OpenLogic --all
+
+
+# Create a resource group.
+az group create --name myResourceGroup --location chinanorth
+
+# Create a virtual network.
+az network vnet create --resource-group myResourceGroup --name myVnet --subnet-name mySubnet
+
+# Create a public IP address.
+az network public-ip create --resource-group myResourceGroup --name myPublicIP
+
+# Create a network security group.
+az network nsg create --resource-group myResourceGroup --name myNetworkSecurityGroup
+
+# Create a virtual network card and associate with public IP address and NSG.
+az network nic create \
+  --resource-group myResourceGroup \
+  --name myNic \
+  --vnet-name myVnet \
+  --subnet mySubnet \
+  --network-security-group myNetworkSecurityGroup \
+  --public-ip-address myPublicIP
+
+# Create a new virtual machine, this creates SSH keys if not present.
+# Using CentOS 6.5 URN, you can use your own
+az vm create --resource-group myResourceGroup --name myVM --nics myNic --image "OpenLogic:CentOS:6.5:6.5.20160329" --size Standard_DS2_v2 --admin-username azureuser --admin-password 'Azure123456!'
+
+# Open port 22 to allow SSh traffic to host.
+az vm open-port --port 22 --resource-group myResourceGroup --name myVM
